@@ -56,10 +56,10 @@ const norm=s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLo
 function show(){
  const term=norm(q.value);
  if(!term){heading.textContent='Petunjuk pencarian';count.textContent='';results.innerHTML='<div class="empty">Masukkan nama atau alamat pada kolom pencarian untuk melihat hasil.</div>';return}
- const found=people.filter(p=>norm(p.nama+' '+p.alamat+' '+p.tps).includes(term)).slice(0,100);
+ const found=people.filter(p=>norm(p.nomor+' '+p.nama+' '+p.alamat+' '+p.tps).includes(term)).slice(0,100);
  heading.textContent='Hasil pencarian';count.textContent=found.length===100?'Menampilkan 100 hasil pertama':`${found.length} hasil`;
  if(!found.length){results.innerHTML='<div class="empty">Data tidak ditemukan. Periksa ejaan nama atau coba kata kunci lain.</div>';return}
- results.innerHTML=found.map(p=>`<article class="result"><div class="person">${escapeHtml(p.nama)}</div><div class="detail"><span>⌂</span><span>${escapeHtml(p.alamat)}</span></div><div class="tag">${escapeHtml(p.tps)}</div></article>`).join('');
+ results.innerHTML=found.map(p=>`<article class="result"><div class="tag" style="margin:0 0 9px">NOMOR PEMILIH: ${escapeHtml(p.nomor ?? p.no ?? '-')}</div><div class="person">${escapeHtml(p.nama)}</div><div class="detail"><span>⌂</span><span>${escapeHtml(p.alamat)}</span></div><div class="tag">${escapeHtml(p.tps)}</div></article>`).join('');
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 fetch('./data.json').then(r=>{if(!r.ok)throw Error('data');return r.json()}).then(data=>{people=data;document.getElementById('total').textContent=data.length.toLocaleString('id-ID');}).catch(()=>{document.getElementById('total').textContent='—';results.innerHTML='<div class="empty">Data belum berhasil dimuat. Pastikan file data.json ikut diunggah bersama website.</div>'});
